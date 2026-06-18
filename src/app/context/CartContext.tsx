@@ -5,7 +5,8 @@ import axios from 'axios';
 
 interface CartContextType {
   cartCount: number;
-  addToCart: (productId: number) => Promise<void>;
+  addToCart: (id: number) => Promise<void>;
+  fetchCartCount: () => Promise<void>; // Blueprint bilkul sahi hai
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -17,7 +18,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const fetchCartCount = async () => {
     try {
       const response = await axios.get('/api/cart');
-      setCartCount(response.data.totalCount);
+      // Secure check: Agar direct totalCount mile toh thik, nahi toh fallback
+      if (response.data && typeof response.data.totalCount === 'number') {
+        setCartCount(response.data.totalCount);
+      } else if (response.data && response.data.items) {
+        const count = response.data.items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+        setCartCount(count);
+      }
     } catch (error) {
       console.error("Error fetching cart count:", error);
     }
@@ -37,7 +44,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{ cartCount, addToCart }}>
+    // FIX: Yahan value ke andar fetchCartCount ko add kar diya hai
+    <CartContext.Provider value={{ cartCount, addToCart, fetchCartCount }}>
       {children}
     </CartContext.Provider>
   );

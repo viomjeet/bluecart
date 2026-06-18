@@ -1,19 +1,13 @@
 import { connectDB } from '@/lib/db';
 import { NextResponse, NextRequest } from 'next/server';
-
-// Is flexible handler se Next.js compiler bina kisi type error ke pass ho jata hai
 export async function GET(request: NextRequest, context: any) {
   try {
-    // Context ko strictly await karke safely 'id' nikalna
     const params = await context.params;
     const id = params?.id;
-
     if (!id) {
       return NextResponse.json({ error: "Product ID is missing" }, { status: 400 });
     }
-    
     const pool = await connectDB();
-
     const query = `
       SELECT 
         p.id, 
@@ -30,16 +24,12 @@ export async function GET(request: NextRequest, context: any) {
       WHERE p.id = $1
       GROUP BY p.id;
     `;
-
     const result = await pool.query(query, [id]);
     const product = result.rows[0];
-
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
-
     return NextResponse.json(product, { status: 200 });
-
   } catch (error: any) {
     console.error("Database ID routing error:", error);
     return NextResponse.json(
