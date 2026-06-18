@@ -1,11 +1,21 @@
 import { connectDB } from '@/lib/db';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// Next.js ke strict types ke anusaar context interface define kiya
+interface RouteContext {
+  params: Promise<{ id: string }>;
+}
+
+// 1. NextRequest use kiya standard Request ki jagah
+// 2. Type definition ko Promise structure mein set kiya
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const { id } = await params;
+    // CRITICAL FIX: context.params ko await karke resolve kiya
+    const { id } = await context.params;
+    
     const pool = await connectDB();
 
+    // Aapka aggregate slider images wala query bilkul sahi hai, use waisa hi rakha hai
     const query = `
       SELECT 
         p.id, 
@@ -33,6 +43,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     return NextResponse.json(product, { status: 200 });
 
   } catch (error: any) {
+    console.error("Database ID routing error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to fetch product data." }, 
       { status: 500 }
