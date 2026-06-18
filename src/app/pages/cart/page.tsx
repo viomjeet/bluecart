@@ -5,16 +5,13 @@ import axios from 'axios';
 import Link from 'next/link';
 import { Trash } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { useCart } from '../../context/CartContext'; // Sahi context path
+import { useCart } from '../../context/CartContext';
 
 export default function CartPage() {
     const [cartItems, setCartItems] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string>('');
-    
-    // FIX: cartCount state variable ke badle fetchCartCount function nikala navbar ko update karne ke liye
     const { fetchCartCount } = useCart();
-
     const fetchCart = async () => {
         try {
             setLoading(true);
@@ -34,14 +31,8 @@ export default function CartPage() {
     const handleDeleteItem = async (cartItemId: number, productName: string) => {
         try {
             await axios.delete(`/api/cart?cartItemId=${cartItemId}`);
-            
-            // UI state se filter out kiya instantly
             setCartItems((prevItems) => prevItems.filter(item => item.cart_item_id !== cartItemId));
-            
-            // Library alert trigger kiya
             toast.success(`"${productName}" removed from cart`);
-
-            // FIX: Context ka dynamic global counter refresh kiya
             if (fetchCartCount) {
                 await fetchCartCount();
             }
@@ -76,31 +67,31 @@ export default function CartPage() {
 
     return (
         <div className="min-h-screen bg-background text-foreground px-4 sm:px-6 py-12 w-full max-w-7xl mx-auto selection:bg-blue-500/20">
-            <div className="mb-10 border-b border-muted/20 pb-6">
-                <h2 className="font-sans font-extrabold text-3xl tracking-tight mb-2 text-foreground">
+            <div className="mb-10 border-b border-gray-200 pb-6">
+                <h2 className="font-sans font-notmal text-2xl mb-2">
                     Shopping Cart
                 </h2>
-                <p className="font-sans text-xs sm:text-sm text-muted-foreground/80 font-medium">
+                <p className="font-sans font-normal text-sm opacity-80">
                     {cartItems.length === 0 ? "Your cart is empty." : `You have ${cartItems.length} unique items in your cart.`}
                 </p>
             </div>
 
             {cartItems.length === 0 ? (
-                <div className="text-center py-20 bg-card rounded-2xl shadow-xs border border-muted/20 max-w-2xl mx-auto">
-                    <p className="text-muted-foreground font-semibold text-sm mb-6">No products found in your database layer.</p>
+                <div className="text-center py-20 bg-card rounded-2xl shadow-xs border border-gray-200 max-w-2xl mx-auto">
+                    <p className="font-sans font-normal text-sm opacity-80 mb-6">No products found in your database layer.</p>
                     <Link href="/pages/products" className="inline-flex items-center justify-center bg-foreground text-background dark:bg-white dark:text-slate-950 text-xs font-bold px-6 py-3 rounded-xl shadow transition-all hover:opacity-90">
                         Continue Shopping
                     </Link>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    
+
                     {/* Left Stack List */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
                         {cartItems.map((item) => (
                             <div
                                 key={item.cart_item_id}
-                                className="group bg-card p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border border-muted/20 transition-all duration-200 hover:shadow-md"
+                                className="group bg-card p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between border border-gray-200 transition-all duration-200 hover:shadow-md"
                             >
                                 <div className="flex items-center gap-4 w-full sm:w-auto">
                                     <div className="w-20 h-20 bg-muted/40 rounded-xl overflow-hidden shrink-0 border border-muted/10">
@@ -147,7 +138,7 @@ export default function CartPage() {
                         ))}
                     </div>
 
-                    <div className="bg-card p-6 rounded-2xl shadow-xs border border-muted/20 flex flex-col gap-5 sticky top-24">
+                    <div className="bg-card p-6 rounded-2xl shadow-xs border border-gray-200 flex flex-col gap-5 sticky top-24">
                         <h3 className="text-xs font-bold uppercase text-muted-foreground/60 tracking-wider border-b border-muted/20 pb-3">
                             Order Summary
                         </h3>

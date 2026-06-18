@@ -72,10 +72,10 @@ export default function ProductsPage() {
       {/* Top Header Section: Title on Left, Categories on Right */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12 pb-6 border-b border-muted/20">
         <div>
-          <h2 className="font-sans font-extrabold text-3xl tracking-tight mb-1 text-foreground">
+          <h2 className="font-sans font-notmal text-2xl mb-2">
             Discover Products
           </h2>
-          <p className="font-sans text-sm text-muted-foreground/80 font-medium">
+          <p className="font-sans font-normal text-sm opacity-80">
             Our latest collection, curated just for you.
           </p>
         </div>
@@ -87,7 +87,7 @@ export default function ProductsPage() {
               key={category}
               type="button"
               onClick={() => setSelectedCategory(category)}
-              className={`text-xs font-semibold px-4 py-2.5 rounded-full transition-all duration-200 shadow-sm whitespace-nowrap ${selectedCategory === category
+              className={`text-xs pointer font-sans font-semibold px-4 py-2.5 rounded-full transition-all duration-200 shadow-sm whitespace-nowrap ${selectedCategory === category
                 ? 'bg-foreground text-background shadow-md transform scale-[1.02]'
                 : 'bg-card text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
@@ -116,7 +116,8 @@ export default function ProductsPage() {
                 />
 
                 <span className="absolute top-3 left-3 text-[10px] font-bold text-white bg-orange-600/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
-                  Only {Math.floor(Math.random() * 10) + 3} Left
+                  {/* Only {Math.floor(Math.random() * 10) + 3} Left */}
+                  In Stock
                 </span>
               </div>
 

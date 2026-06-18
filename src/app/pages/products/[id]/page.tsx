@@ -12,17 +12,12 @@ interface ProductDetailPageProps {
 
 export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = use(params);
-
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [selectedImage, setSelectedImage] = useState<string>('');
-
-  // Context hook call kiya
   const { addToCart } = useCart();
-
   const defaultImage = "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&q=80";
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
